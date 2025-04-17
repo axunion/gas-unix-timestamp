@@ -1,28 +1,21 @@
 type GetResponse = {
 	result: "done" | "error";
-	data?: unknown;
+	timestamp?: number;
 	error?: string;
 };
 
 function _doGet() {
-	const e = { parameter: { type: "" } };
-	const result = doGet(e as unknown as GoogleAppsScript.Events.DoGet);
+	const result = doGet();
 	console.log(result.getContent());
 }
 
-function doGet(
-	e: GoogleAppsScript.Events.DoGet,
-): GoogleAppsScript.Content.TextOutput {
+function doGet(): GoogleAppsScript.Content.TextOutput {
 	const response: GetResponse = { result: "done" };
 
 	try {
-		const type = e.parameter.type;
-
-		if (!type) {
-			throw new Error("Invalid parameter.");
-		}
-
-		response.data = type;
+		const now = new Date();
+		const unixTime = Math.floor(now.getTime() / 1000);
+		response.timestamp = unixTime;
 	} catch (error) {
 		response.result = "error";
 		response.error = error.message;
