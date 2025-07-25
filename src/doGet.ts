@@ -1,8 +1,14 @@
-type GetResponse = {
-	result: "done" | "error";
-	timestamp?: number;
-	error?: string;
+type GetSuccessResponse = {
+	result: "done";
+	timestamp: number;
 };
+
+type GetErrorResponse = {
+	result: "error";
+	error: string;
+};
+
+type GetResponse = GetSuccessResponse | GetErrorResponse;
 
 function _doGet() {
 	const result = doGet();
@@ -10,15 +16,14 @@ function _doGet() {
 }
 
 function doGet(): GoogleAppsScript.Content.TextOutput {
-	const response: GetResponse = { result: "done" };
+	let response: GetResponse;
 
 	try {
 		const now = new Date();
 		const unixTime = Math.floor(now.getTime() / 1000);
-		response.timestamp = unixTime;
+		response = { result: "done", timestamp: unixTime };
 	} catch (error) {
-		response.result = "error";
-		response.error = error.message;
+		response = { result: "error", error: error.message };
 	}
 
 	return ContentService.createTextOutput(JSON.stringify(response));
