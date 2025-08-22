@@ -23,7 +23,10 @@ function doGet(): GoogleAppsScript.Content.TextOutput {
 		const unixTime = Math.floor(now.getTime() / 1000);
 		response = { result: "done", timestamp: unixTime };
 	} catch (error) {
-		response = { result: "error", error: error.message };
+		response = {
+			result: "error",
+			error: error instanceof Error ? error.message : String(error),
+		};
 	}
 
 	return ContentService.createTextOutput(JSON.stringify(response));
